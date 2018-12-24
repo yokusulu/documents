@@ -1,0 +1,136 @@
+ローカル環境構築（windows10）
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+CentOS Linux release 7.2.1511 (Core)
+Apache/2.4.6 (CentOS)
+PHP 7.2.13 (cli)
+mysqld  Ver 5.7.24 for Linux on x86_64 (MySQL Community Server (GPL))
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+
+Virtual Box 5.1.38
+https://www.virtualbox.org/wiki/Downloads
+
+Vagrant 2.2.0
+https://www.vagrantup.com/
+を入れる。
+
+ローカル、自分の好きな階層で
+vagrant init bento/centos-7.2
+実行。
+（永原はC:\vagrant\work1フォルダ作成。）
+
+vagrantfileが作成されるので
+config.vm.network "private_network", ip: "192.168.33.10"
+のコメントアウトを外す。
+※好きなIPでOK。
+
+vagrant upを実行。
+
+エラー。
+
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+Vagrant was unable to mount VirtualBox shared folders. This is usually
+because the filesystem "vboxsf" is not available. This filesystem is
+made available via the VirtualBox Guest Additions and kernel module.
+Please verify that these guest additions are properly installed in the
+guest. This is not a bug in Vagrant and is usually caused by a faulty
+Vagrant box. For context, the command attempted was:
+
+mount -t vboxsf -o uid=1000,gid=1000 vagrant /vagrant
+
+The error output from the command was:
+
+/sbin/mount.vboxsf: mounting failed with the error: No such device
+
+＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+
+vagrant plugin install vagrant-vbguest
+でvagrant-vbguestいれて
+vagrant vbguest
+実行。
+
+また、エラー。
+
+vagrant sshでゲストOSに入って
+yum -y install kernel kernel-devel
+実行。
+
+vagrant halt
+vagrant up
+実行。エラーはかずup完了。
+
+
+ミドルウェアの設定
+
+再度、vagrant ssh
+sudo yum install httpd
+でapacheを入れる。
+
+sudo systemcyl enable httpd
+で起動設定して
+
+sudo systemcyl start httpd
+でapache起動。
+
+ブラウザでIP入れて確認取る。
+
+Mysql入れる。
+yum localinstall http://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+yum info mysql-community-server
+yum -y install mysql-community-server
+
+systemctl enable mysqld.service
+systemctl start mysqld.service
+でスタートしておく。
+
+php入れる。
+その前にepelとremiのリポジトリ投入。
+yum install epel-release.noarch
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+
+んで
+yum --enablerepo=epel install libmcrypt
+yum --enablerepo=remi-php72 install -y php php-cli php-devel php-common php-mbstring php-mysql php-fpm php-gd php-mcrypt php-opcache php-pdo php-xml
+
+php -vでバージョン確認する。
+
+exit
+でゲストOSをから抜ける。
+
+vagrant haltで起動停止。
+
+git hubからクローンでデータを取ってくる。
+C:/vagrant/work1でいろいろやってるからここにgitフォルダを作成
+developブランチにチェックアウト。
+git/yokusuluができるので
+ftpツールで、yokusuluフォルダをまるっとコピー。
+
+vagrant fileに
+  config.vm.synced_folder "C:/vagrant/work1/git/yokusulu", "/var/www/html/yokusulu"
+を足してゲストとホストをリンクさせる。
+（C:/vagrant/work1/git/yokusulu"の部分は各々適宜変更する）
+
+再度、vagrant up
+
+vagrant sshに入り、
+vim /etc/httpd/conf/httpd.conf
+で、
+Document rootを/var/www/html/yokusulu/public
+に変更。
+
+ipをブラウザに打てば、laravel画面が出る。
+
+
+
+
+
+
+
+
+
+
+http://nana205.hatenablog.com/entry/2018/05/25/025923
+http://javabayashi.hatenablog.com/entry/2017/02/10/135852
+https://qiita.com/ysti/items/6eed1079fd26b0212286
+
+yum --enablerepo=remi-php72 install -y php php-cli php-devel php-common php-mbstring php-mysql php-fpm php-gd php-mcrypt php-opcache php-pdo php-xml

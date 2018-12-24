@@ -1,0 +1,16 @@
+
+
+DBレビュー
+
+１,host_usersテーブルにそれぞれname,emailカラムがある理由
+（usersテーブルに同じカラムがあるのでいらないのではないか？）
+
+2,zipはvarchar
+
+3,phoneはint(11)もしくはvarchar(13)
+
+4,updated_atにON UPDATE CURRENT_TIMESTAMPオプションが必要
+
+5,deleteed_atはdatetimeかint(1)で１か0のフラグ型式もしくは別テーブル作成
+
+6,super_users,usersにはpassowrdカラムが必要ではないか

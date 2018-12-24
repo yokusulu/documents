@@ -1,0 +1,50 @@
+まずは、Composerのインストールから
+yum install composer 打つ。
+※Do not run Composeras root/sper user!...と表示されるがWarningなので
+そのまま待ってればComposerがインストールされる
+
+composer global require laravel/installer 打つ
+laravelがphpのバージョンに依存して入ってくれる。
+
+composer create-project laravel/laravel /var/www/html/yokusulu --prefer-dist
+laravelプロジェクト作成。
+
+cd /var/www/html/yokusulu/
+php artisan -v
+で、laravelのバージョン確認。
+ちなみに他の階層でartisanコマンド打ったらエラーでるから注意。
+
+んで、http://153.126.176.112/yokusulu/public/ みる。
+
+The stream or file "/var/www/html/yokusulu/storage/logs/laravel-2018-11-28.log" could not be opened: failed to open stream: Permission denied
+のエラー。
+
+logs配下みるとlaravel-2018-11-28.logがない。ファイル作成。
+chmod 777 laravel-2018-11-28.logで権限変えてあげて
+再度、http://153.126.176.112/yokusulu/public/
+
+次は、ErrorException (E_UNKNOWN) 
+file_put_contents(/home/shaa/lara/app/storage/meta/services.json): failed to open stream: Permission denied のエラー
+
+どうもPermission系がおかしい…？
+
+https://teratail.com/questions/4161
+↑が参考なった
+
+chmod -R 777 /var/www/html/yokusulu/app/storage/ 
+上のコマンドでstorage配下の権限を全開放してあげたら、エラーなくみれた。
+
+このままでは、http://153.126.176.112/yokusulu/public/がトップ画面なので
+ドキュメントルートを変える。
+
+cd /etc/httpd/conf
+vim httpd.conf
+
+DocumentRoot "/var/www/html/yokusulu/public/"
+
+に変更。
+
+http://153.126.176.112でLravelが表示。
+
+
+

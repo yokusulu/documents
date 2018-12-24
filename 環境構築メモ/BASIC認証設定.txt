@@ -1,0 +1,29 @@
+https://qiita.com/yuwaita/items/e406c645ae8d0cc3c3fa
+↑で.htaccessと.htpasswdを作成。
+
+.htpasswdを/var/www/htmlに配置。
+.htaccessを/var/www/html/yokusuluに配置。
+
+繋いでみたけど、認証が効いていない。
+
+cd /etc/httpd/conf/
+vim httpd.conf
+
+を開く。
+
+<Directory "/var/www/html/yokusulu">
+
+AllowOverride All
+Require all granted
+
+</Directory>
+
+の記載を追加。
+
+※apacheを読み込む段階で
+この階層にAllowOverride Allを効かせる必要あり。
+
+systemctl restart httpd
+でapache再起動。
+
+BASIC認証が効くようになった。

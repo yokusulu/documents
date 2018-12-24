@@ -1,0 +1,25 @@
+★コーディングルール★
+
+■ 関数や定数はスネーク記法で記述する。
+■ If文の後の｛は下に落とす
+■ マジックナンバーは定数化する。
+■ ネストは基本2回まで
+■ インデントは4タブ1スペース、（段を落とすときは？）
+■ 定数を組むときはdefineではなく基本constを用いる。
+
+※参考記事※
+https://qiita.com/Hiraku/items/bb0cb665d830f7cd37ff
+https://qiita.com/tricogimmick/items/544b7420a1f8338a23bb
+
+■ Model以外でDBからデータを取得しない
+■ ネストは基本2回まで。（処理速度を鑑みて）
+■ ModelでのDBのやり取り、基本的にLaravelのORマッパーで記述。
+■ プリペアドステートメント、クロスサイトスクリプティングの意識を持ってコーディング
+■ 配列を組むときはarray_push関数ではなく、array[] =の記法で
+（array_pushは関数であるために、処理速度が遅くなる！）
+functionを作成するときは@param書く
+※参考記事※
+https://qiita.com/motoyan-qwt/items/ee973666f1105435822c
+
+■ APIやCDNのような他媒体からデータを取得する記載はtry catce文を使い、疎通不可時に
+エラーを吐かないようにする。
